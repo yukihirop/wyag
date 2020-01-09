@@ -240,6 +240,9 @@ def object_write(obj, actually_write=True):
 
   return sha
 
+def object_find(repo, name, fmt=None, follow=True):
+  return name
+
 class GitBlob(GitObject):
   fmt=b'blob'
 
@@ -257,6 +260,7 @@ class GitCommit(GitObject):
 
   def deserialize(self, data):
     self.blobdata = data
+
 
 argsp = argsubparsers.add_parser("cat-file",
                                 help="Provide content of repository objects")
@@ -278,4 +282,3 @@ def cmd_cat_file(args):
 def cat_file(repo, obj, fmt=None):
   obj = object_read(repo, object_find(repo, obj, fmt=fmt))
   sys.stdout.buffer.write(obj.serialize())
->>>>>>> 0cd910e... commit
