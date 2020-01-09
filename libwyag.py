@@ -7,12 +7,14 @@ import re
 import sys
 import zlib
 
+from IPython import embed
+
 argparser = argparse.ArgumentParser(description="The stupid content tracker")
 
 argsubparsers = argparser.add_subparsers(title="Commands", dest="command")
 argsubparsers.required = True
 
-def main(argv=sys.argv[1:])
+def main(argv=sys.argv[1:]):
   args = argparser.parse_args(argv)
 
   if   args.command == "add"         : cmd_add(args)
@@ -38,9 +40,9 @@ class GitRepository(object):
   gitdir = None
   conf = None
 
-  def __init__(self, path, force=False)
+  def __init__(self, path, force=False):
     self.worktree = path
-    self.gitdir = os.path.join(path, ".git")
+    self.gitdir = os.path.join(path, ".wyag")
 
     if not (force or os.path.isdir(self.gitdir)):
       raise Exception("Not a Git repository %s" % path)
@@ -59,32 +61,37 @@ class GitRepository(object):
       if vers != 0:
         raise Exception("Unsupported repositoryformatversion %s" % vers)
 
-def repo_path(repo, *path)
-  """Compute path under repo's gitdir.""""
+def repo_path(repo, *path):
+  """Compute path under repo's gitdir."""
   return os.path.join(repo.gitdir, *path)
 
 def repo_file(repo, *path, mkdir=False):
   """Same as repo_path, but create dirname(*path) if absent.
   For example, repo_file(r, \"refs\", \"remotes\", \"origin\", \"HEAD\") will create
   .git/refs/remotes/origin. """
+
   if repo_dir(repo, *path[:-1], mkdir=mkdir):
     return repo_path(repo, *path)
 
 def repo_dir(repo, *path, mkdir=False):
-  """Same as repo_path, but mkdir *path if absent if mkdir.""""
+  """Same as repo_path, but mkdir *path if absent if mkdir."""
+
   path = repo_path(repo, *path)
+
   if os.path.exists(path):
     if (os.path.isdir(path)):
       return path
     else:
       raise Exeption("Not a directory %s" % path)
-  if mkdir
-    os.makeddirs(path)
+
+  if mkdir:
+    os.makedirs(path)
+    return path
   else:
-    raise None
+    return None
 
 def repo_create(path):
-  """Create a new repository at path.""""
+  """Create a new repository at path."""
   repo = GitRepository(path, True)
 
   # First, we make sure the path either doesn't exist or is an
@@ -96,7 +103,7 @@ def repo_create(path):
     if os.listdir(repo.worktree):
       raise Exception("%s is not empty!" % path)
   else:
-    os.mkedirs(repo.worktree)
+    os.makedirs(repo.worktree)
 
   assert(repo_dir(repo, "branches", mkdir=True))
   assert(repo_dir(repo, "objects", mkdir=True))
@@ -115,6 +122,10 @@ def repo_create(path):
     config = repo_default_config()
     config.write(f)
 
+  with open(repo_file(repo, "config"), "w") as f:
+        config = repo_default_config()
+        config.write(f)
+
   return repo
 
 def repo_default_config():
@@ -128,7 +139,7 @@ def repo_default_config():
   return ret
 
 argsp = argsubparsers.add_parser("init", help="Initialize a new empty repository.")
-argsp.add_argument("path"
+argsp.add_argument("path",
                    metavar="directory",
                    nargs="?",
                    default=".",
@@ -136,4 +147,4 @@ argsp.add_argument("path"
 
 def cmd_init(args):
   repo_create(args.path)
-  
+
