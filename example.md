@@ -16,3 +16,11 @@ committer yukihirop <te108186@gmail.com> 1578384538 +0900
 
 Create local repository: .trs
 ```
+
+## hash-object
+
+```
+#2020-01-10 11:52|fukudayu@NPC206:~/PythonProjects/wyag/right (master*?)
+$ ../wyag hash-object -w ../libwyag.py
+5a9c82bea9f4e40224d79b0032423172d9c6276e
+```
