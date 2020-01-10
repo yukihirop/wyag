@@ -47,6 +47,13 @@ $ ./wyag ls-tree d0e9e6c6394759defbedc11f4c28ad87b723c90e
 040000 tree aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7	hoge
 ```
 
+## checkout
+
+```
+#2020-01-10 19:05|fukudayu@NPC206:~/PythonProjects/wyag (master*?)
+$ ./wyag checkout 7c67dc35b3478a30849e8f62331eb8215194694a co
+```
+
 ## compress <=> decompress
 
 ```

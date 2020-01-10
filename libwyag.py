@@ -417,7 +417,6 @@ def log_graphviz(repo, sha, seen):
     return
   seen.add(sha)
 
-  embed()
   commit = object_read(repo, sha)
   assert(commit.fmt==b'commit')
 
@@ -459,6 +458,7 @@ def tree_parse_one(raw, start=0):
         int.from_bytes(
             raw[y+1:y+21], "big"))[2:] # hex() adds 0x in front,
                                            # we don't want that.
+
   return y+21, GitTreeLeaf(mode, path, sha)
 
 def tree_parse(raw):
@@ -479,7 +479,7 @@ def tree_serialize(obj):
     ret += i.mode
     ret += b' '
     ret += b'\x00'
-    sha = int(i,sha, 16)
+    sha = int(i.sha, 16)
     # @FIXME Does
     ret += sha.to_bytes(20, byteorder="big")
   return ret
@@ -510,3 +510,45 @@ def cmd_ls_tree(args):
       item.sha,
       item.path.decode("ascii")
     ))
+
+
+argsp = argsubparsers.add_parser("checkout", help="Checkout a commit inside of directory.")
+
+argsp.add_argument("commit",
+                  help="The commit or tree to checkout.")
+
+argsp.add_argument("path",
+                  help="The EMPTY directory to checkout on.")
+
+
+def cmd_checkout(args):
+  repo = repo_find()
+
+  obj = object_read(repo, object_find(repo, args.commit))
+
+  # If the object is a commit, we grab its tree
+  if obj.fmt == b'commit':
+    obj = object_read(repo, obj.kvlm[b'tree'].decode('ascii'))
+
+  # Verify that path is an empty directory
+  if os.path.exists(args.path):
+    if not os.path.isdir(args.path):
+      raise Exception("Not a directory {0}!".format(args.path))
+    if os.listdir(args.path):
+      raise Exception("Not empty {0}!".format(args.path))
+  else:
+    os.makedirs(args.path)
+
+  tree_checkout(repo, obj, os.path.realpath(args.path).encode())
+
+def tree_checkout(repo, tree, path):
+  for item in tree.items:
+    obj = object_read(repo, item.sha)
+    dest = os.path.join(path, item.path)
+
+    if obj.fmt == b'tree':
+      os.mkdir(dest)
+      tree_checkout(repo, obj, dest)
+    elif obj.fmt == b'blob':
+      with open(dest, 'wb') as f:
+        f.write(obj.blobdata)
