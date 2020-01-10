@@ -40,6 +40,13 @@ c_25e15f8e03ac2aa81c8fcd9fa0e72edffdc1f8a2 -> c_4e83dec2b6c78104c027b28aaba32281
 }
 ```
 
+## ls-tree
+
+```
+$ ./wyag ls-tree d0e9e6c6394759defbedc11f4c28ad87b723c90e
+040000 tree aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7	hoge
+```
+
 ## compress <=> decompress
 
 ```
