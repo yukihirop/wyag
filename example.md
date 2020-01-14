@@ -63,6 +63,33 @@ b581553940d5c881d6259d7d5ccbe95b7edc51d0 refs/remotes/origin/HEAD
 b581553940d5c881d6259d7d5ccbe95b7edc51d0 refs/remotes/origin/master
 ```
 
+## tag
+
+```
+In [4]: tag_sha
+Out[4]: 'be14e964bba669037abdcbb30c7ab1f16c4f7918'
+```
+
+```
+./wyag tag tag-example-3 44f2fa3a37b320d5cc9e6c89e395b6dad0a08873
+```
+
+```
+$ ./wyag tag
+tag-example
+tag-example-2
+tag-example-3
+```
+
+```
+$ ./wyag show-ref
+c45f710f4f118f42a2ec79d39d2c9a4e09ae5214 refs/heads/master
+c45f710f4f118f42a2ec79d39d2c9a4e09ae5214 refs/remotes/origin/HEAD
+c45f710f4f118f42a2ec79d39d2c9a4e09ae5214 refs/remotes/origin/master
+44f2fa3a37b320d5cc9e6c89e395b6dad0a08873 refs/tags/tag-example
+be14e964bba669037abdcbb30c7ab1f16c4f7918 refs/tags/tag-example-2
+```
+
 ## compress <=> decompress
 
 ```

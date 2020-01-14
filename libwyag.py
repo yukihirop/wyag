@@ -595,3 +595,63 @@ def show_ref(repo, refs, with_hash=True, prefix=""):
         k))
     else:
       show_ref(repo, v, with_hash=with_hash, prefix="{0}{1}{2}".format(prefix, "/" if prefix else "", k))
+
+
+class GitTag(GitCommit):
+  fmt = b'tag'
+
+argsp = argsubparsers.add_parser(
+  "tag",
+  help="List and create tags")
+
+argsp.add_argument("-a",
+                    action="store_true",
+                    dest="create_tag_object",
+                    help="Whether to create a tag object")
+
+argsp.add_argument("name",
+                    nargs="?",
+                    help="The new tag's name")
+
+argsp.add_argument("object",
+                    default="HEAD",
+                    nargs="?",
+                    help="The object the new tag will point to")
+
+def cmd_tag(args):
+  repo = repo_find()
+
+  if args.name:
+    tag_create(repo,
+               args.name,
+               args.object,
+               create_tag_object=True)
+  else:
+    refs = ref_list(repo)
+    show_ref(repo, refs["tags"], with_hash=False)
+
+def tag_create(repo: GitRepository, name, reference, create_tag_object):
+  # get the GitObject from the object reference
+  sha = object_find(repo, reference)
+
+  if create_tag_object:
+    # create tag object (commit)
+    tag = GitTag(repo)
+    tag.kvlm = collections.OrderedDict()
+    tag.kvlm[b'object'] = sha.encode()
+    tag.kvlm[b'type'] = b'commit'
+    tag.kvlm[b'tag'] = name.encode()
+    tag.kvlm[b'tagger'] = b'The soul eater <grim@reaper.net>'
+    tag.kvlm[b''] = b'This is the commit message that should have come from the user\n'
+    tag_sha = object_write(tag, True)
+    # create reference
+    ref_create(repo, "tags/" + name, tag_sha)
+  else:
+    # create lightweight tag (ref)
+    ref_create(repo, "tags/" + name, sha)
+
+def ref_create(repo, ref_name, sha):
+  with open(repo_file(repo, "refs/" + ref_name), 'w') as fp:
+    fp.write(sha + '\n')
+
+
