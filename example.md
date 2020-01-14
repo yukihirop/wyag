@@ -54,6 +54,15 @@ $ ./wyag ls-tree d0e9e6c6394759defbedc11f4c28ad87b723c90e
 $ ./wyag checkout 7c67dc35b3478a30849e8f62331eb8215194694a co
 ```
 
+## show-ref
+
+```
+$ ./wyag show-ref
+b581553940d5c881d6259d7d5ccbe95b7edc51d0 refs/heads/master
+b581553940d5c881d6259d7d5ccbe95b7edc51d0 refs/remotes/origin/HEAD
+b581553940d5c881d6259d7d5ccbe95b7edc51d0 refs/remotes/origin/master
+```
+
 ## compress <=> decompress
 
 ```
