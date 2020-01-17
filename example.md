@@ -90,6 +90,20 @@ c45f710f4f118f42a2ec79d39d2c9a4e09ae5214 refs/remotes/origin/master
 be14e964bba669037abdcbb30c7ab1f16c4f7918 refs/tags/tag-example-2
 ```
 
+## rev-parse
+
+```
+$ ./wyag rev-parse 7af6fc
+7af6fc4ff53183852a39e7a65eaadfeeb12df551
+```
+
+```
+$ ./wyag rev-parse HEAD
+463629b36252c3d118a203b7ce9f478f63324199
+```
+
+
+
 ## compress <=> decompress
 
 ```
